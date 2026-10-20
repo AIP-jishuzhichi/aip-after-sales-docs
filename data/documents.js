@@ -3,8 +3,8 @@ window.__DOCUMENTS__ = {
   "site": {
     "title": "AIP 售后文件库",
     "description": "售后资料集中存放，按分类归档，支持搜索与在线预览",
-    "repo": "",
-    "generatedAt": "2026-10-20T10:36:54+08:00"
+    "repo": "https://github.com/AIP-jishuzhichi/aip-after-sales-docs",
+    "generatedAt": "2026-10-20T11:43:12+08:00"
   },
   "stats": {
     "documents": 10,
@@ -57,7 +57,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "06-培训资料",
       "category": "培训资料",
       "bytes": 69857,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/05-表单与协议/售后服务申请单.pdf",
@@ -66,7 +66,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "05-表单与协议",
       "category": "表单与协议",
       "bytes": 70060,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/04-常见问题/售后常见问题 50 问.pdf",
@@ -75,7 +75,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "04-常见问题",
       "category": "常见问题",
       "bytes": 68878,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/05-表单与协议/保修条款与责任说明.pdf",
@@ -84,7 +84,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "05-表单与协议",
       "category": "表单与协议",
       "bytes": 70948,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/02-维修与调试/主板更换作业指导书.pdf",
@@ -93,7 +93,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "02-维修与调试",
       "category": "维修与调试",
       "bytes": 71041,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/03-固件与软件/PC 端配置工具安装指南.pdf",
@@ -102,7 +102,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "03-固件与软件",
       "category": "固件与软件",
       "bytes": 73001,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/01-产品手册/AIP-3000 便携式分析仪 用户手册.pdf",
@@ -111,7 +111,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "01-产品手册",
       "category": "产品手册",
       "bytes": 70690,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/01-产品手册/AIP-2000 智能终端 用户手册.pdf",
@@ -120,7 +120,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "01-产品手册",
       "category": "产品手册",
       "bytes": 70599,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/02-维修与调试/AIP-2000 常见故障排查手册.pdf",
@@ -129,7 +129,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "02-维修与调试",
       "category": "维修与调试",
       "bytes": 70681,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     },
     {
       "id": "files/03-固件与软件/AIP-2000 固件升级说明 V2.4.pdf",
@@ -138,7 +138,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "03-固件与软件",
       "category": "固件与软件",
       "bytes": 69765,
-      "updated": "2026-10-20T10:34:41+08:00"
+      "updated": "2026-10-20T10:57:02+08:00"
     }
   ]
 };
