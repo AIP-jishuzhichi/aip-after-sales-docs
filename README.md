@@ -32,7 +32,8 @@ pdf-archive/
 ├── assets/                 样式与前端脚本
 ├── scripts/
 │   ├── build_index.py      扫描 files/ 重建索引
-│   └── add_pdf.py          一键归档 PDF
+│   ├── add_pdf.py          一键归档 PDF
+│   └── github-workflow.example.yml  可选的自动索引工作流
 ├── add-pdf.cmd             把 PDF 拖到它上面即可归档
 ├── update-index.cmd        双击重建索引
 └── preview.cmd             双击本地预览
@@ -49,7 +50,8 @@ pdf-archive/
 **方式一：网页上传（最省事）**
 
 在 GitHub 仓库里进入 `files/` 下的某个分类目录 → `Add file` → `Upload files` → 拖入 PDF → 提交。
-`data/documents.json` 会由仓库内置的 Action 自动重建（首次需在仓库 `Settings → Actions` 里允许运行）。
+页面会通过 GitHub 接口自动发现新文件（时间位置显示「网页上传」），**不需要任何额外配置**。
+想补全文件大小/时间等信息，运行一次 `python scripts/build_index.py`（或启用下方的自动索引）。
 
 **方式二：拖到 `add-pdf.cmd` 上**
 
@@ -97,6 +99,14 @@ git push -u origin main
 
 然后在仓库 `Settings → Pages` 里把 Source 设为 `Deploy from a branch`，分支选 `main`、目录选 `/ (root)`，保存后访问
 `https://<用户名>.github.io/<仓库名>/`。
+
+## 可选：让索引在网页上传后自动重建
+
+`scripts/github-workflow.example.yml` 是一份现成的工作流：把 PDF 提交到 `files/` 后，它会自动运行
+`build_index.py` 并把更新后的索引提交回仓库，这样网页上传的文件也能带上准确的更新时间。
+
+启用方式：在 GitHub 网页上进入 `Add file → Create new file`，文件名填 `.github/workflows/build-index.yml`，
+把示例文件的内容粘贴进去提交即可（在网页上创建不需要额外权限）。
 
 ## 说明
 

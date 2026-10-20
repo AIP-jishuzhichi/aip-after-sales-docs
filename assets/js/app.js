@@ -67,6 +67,7 @@
   }
 
   function formatDate(iso) {
+    if (!iso) return "网页上传";
     var d = new Date(iso);
     if (isNaN(d.getTime())) return "";
     var diff = Date.now() - d.getTime();
@@ -122,6 +123,79 @@
     }
   }
 
+  /* ---------- 兜底：用 GitHub 接口补全未进索引的文件（网页上传后立即可见） ---------- */
+  function repoSlug() {
+    var m = String(state.site.repo || "").match(/github\.com\/([^/]+)\/([^/?#]+)/i);
+    return m ? { owner: m[1], repo: m[2].replace(/\.git$/, "") } : null;
+  }
+
+  function rebuildCategories() {
+    var known = {};
+    state.categories.forEach(function (c) { known[c.id] = c.name; });
+
+    var map = {};
+    state.docs.forEach(function (d) {
+      var id = d.categoryId || "";
+      if (!map[id]) map[id] = { id: id, name: d.category || known[id] || "未分类", count: 0, bytes: 0 };
+      map[id].count += 1;
+      map[id].bytes += d.bytes || 0;
+    });
+
+    var ordered = [];
+    state.categories.forEach(function (c) {
+      if (map[c.id]) { ordered.push(map[c.id]); delete map[c.id]; }
+    });
+    Object.keys(map).forEach(function (k) { ordered.push(map[k]); });
+    state.categories = ordered.filter(function (c) { return c.count > 0; });
+    state.stats.documents = state.docs.length;
+    state.stats.categories = state.categories.length;
+    state.stats.bytes = state.docs.reduce(function (s, d) { return s + (d.bytes || 0); }, 0);
+  }
+
+  function applyTree(entries) {
+    if (!entries || !entries.length) return;
+    var seen = {};
+    state.docs.forEach(function (d) { seen[d.file] = true; });
+
+    var added = 0;
+    entries.forEach(function (node) {
+      if (node.type !== "blob") return;
+      var path = node.path || "";
+      if (path.indexOf("files/") !== 0 || !/\.pdf$/i.test(path)) return;
+      if (seen[path]) return;
+
+      var seg = path.slice(6).split("/");
+      var cid = seg.length > 1 ? seg[0] : "";
+      var name = cid ? (cid.replace(/^\d+[\s._-]*/, "") || cid) : "未分类";
+
+      state.docs.push({
+        id: path,
+        file: path,
+        title: seg[seg.length - 1].replace(/\.pdf$/i, ""),
+        categoryId: cid,
+        category: name,
+        bytes: node.size || 0,
+        updated: ""
+      });
+      added += 1;
+    });
+
+    if (!added) return;
+    rebuildCategories();
+    renderSidebar();
+    renderDocs();
+  }
+
+  function mergeFromGitHub() {
+    var slug = repoSlug();
+    if (!slug) return;
+    var url = "https://api.github.com/repos/" + slug.owner + "/" + slug.repo + "/git/trees/HEAD?recursive=1";
+    fetch(url, { headers: { Accept: "application/vnd.github+json" } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (data) { applyTree(data.tree); })
+      .catch(function () { /* 接口不可用时保持已加载的索引结果 */ });
+  }
+
   /* ---------- 渲染 ---------- */
   function renderSidebar() {
     var total = state.stats.documents || 0;
@@ -163,7 +237,9 @@
     } else if (state.sort === "size") {
       list.sort(function (a, b) { return b.bytes - a.bytes; });
     } else {
-      list.sort(function (a, b) { return String(b.updated).localeCompare(String(a.updated)); });
+      list.sort(function (a, b) {
+        return String(b.updated || "9999").localeCompare(String(a.updated || "9999"));
+      });
     }
     return list;
   }
@@ -365,6 +441,7 @@
       renderDocs();
       bind();
       syncHash();
+      mergeFromGitHub();
     })
     .catch(function (err) {
       el.empty.hidden = false;
