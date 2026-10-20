@@ -152,18 +152,35 @@
     state.stats.bytes = state.docs.reduce(function (s, d) { return s + (d.bytes || 0); }, 0);
   }
 
-  function applyTree(entries) {
+  function applyTree(entries, truncated) {
     if (!entries || !entries.length) return;
+
+    // 仓库里真实存在的 PDF
+    var inRepo = {};
+    entries.forEach(function (node) {
+      if (node.type !== "blob") return;
+      var p = node.path || "";
+      if (p.indexOf("售后资料/") !== 0 || !/\.pdf$/i.test(p)) return;
+      inRepo[p] = node;
+    });
+
+    var changed = false;
+
+    // 清单里有、仓库里已经没有的文件（网页上删掉了）——直接移除
+    if (!truncated) {
+      var kept = state.docs.filter(function (d) { return !!inRepo[d.file]; });
+      if (kept.length !== state.docs.length) {
+        state.docs = kept;
+        changed = true;
+      }
+    }
+
+    // 仓库里有、清单里还没有的文件（网页上传 / 拖拽新加的）——补进来
     var seen = {};
     state.docs.forEach(function (d) { seen[d.file] = true; });
 
-    var added = 0;
-    entries.forEach(function (node) {
-      if (node.type !== "blob") return;
-      var path = node.path || "";
-      if (path.indexOf("售后资料/") !== 0 || !/\.pdf$/i.test(path)) return;
+    Object.keys(inRepo).forEach(function (path) {
       if (seen[path]) return;
-
       var seg = path.slice("售后资料/".length).split("/");
       var cid = seg.length > 1 ? seg[0] : "";
       var name = cid ? (cid.replace(/^\d+[\s._-]*/, "") || cid) : "未分类";
@@ -174,13 +191,13 @@
         title: seg[seg.length - 1].replace(/\.pdf$/i, ""),
         categoryId: cid,
         category: name,
-        bytes: node.size || 0,
+        bytes: inRepo[path].size || 0,
         updated: ""
       });
-      added += 1;
+      changed = true;
     });
 
-    if (!added) return;
+    if (!changed) return;
     rebuildCategories();
     renderSidebar();
     renderDocs();
@@ -192,7 +209,7 @@
     var url = "https://api.github.com/repos/" + slug.owner + "/" + slug.repo + "/git/trees/HEAD?recursive=1";
     fetch(url, { headers: { Accept: "application/vnd.github+json" } })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function (data) { applyTree(data.tree); })
+      .then(function (data) { applyTree(data.tree, data.truncated); })
       .catch(function () { /* 接口不可用时保持已加载的索引结果 */ });
   }
 
