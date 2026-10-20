@@ -1,5 +1,4 @@
 @echo off
-chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
 
@@ -7,8 +6,8 @@ set "PY=python"
 where py >nul 2>nul && set "PY=py -3"
 
 echo.
-echo   æ­£åœ¨å¯åŠ¨æœ¬åœ°é¢„è§ˆï¼šhttp://localhost:8123
-echo   æµè§ˆç»“æŸåŽï¼Œå…³æŽ‰è¿™ä¸ªé»‘è‰²çª—å£å³å¯åœæ­¢ã€‚
+echo   ÕýÔÚÆô¶¯±¾µØÔ¤ÀÀ£ºhttp://localhost:8123
+echo   ä¯ÀÀ½áÊøºó£¬¹ØµôÕâ¸öºÚÉ«´°¿Ú¼´¿ÉÍ£Ö¹¡£
 echo.
 start "" http://localhost:8123/
 %PY% -m http.server 8123
