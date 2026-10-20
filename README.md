@@ -1,112 +1,101 @@
 # AIP 售后文件库
 
-一个纯静态的 PDF 仓库网页：把售后资料按分类放进 `files/`，网页就能搜索、筛选、在线预览，还能把单份文档的链接直接发给同事。
+一个纯静态的 PDF 仓库网页：把售后资料按分类放进 `售后资料/` 文件夹，网页就能搜索、筛选、在线预览，还能把单份文档的链接直接发给同事。
 
 零依赖、零后端、零构建，托管在 GitHub Pages 上即可长期使用。
 
+> 正式网址：https://aip-jishuzhichi.github.io/aip-after-sales-docs/
+
 ## 功能
 
-- **分类归档**：`files/` 下每个目录就是一个分类，目录名数字前缀决定顺序
+- **分类归档**：`售后资料/` 下每个文件夹就是一个分类，名字前的数字决定排序
 - **即时搜索**：标题 + 分类实时过滤，按 `/` 快速聚焦搜索框
 - **在线预览**：点卡片右侧滑出 PDF 阅读器，支持下载、新窗口打开、复制分享链接
 - **两种视图**：网格 / 列表，可按更新时间、标题、大小排序
 - **分享直达**：每份文档都有独立链接（`#/d/文件路径`），打开即预览
-- **索引自动化**：脚本扫描目录生成 `data/documents.json`，GitHub Actions 也可在推送后自动重建
+- **自动发现**：在网页上传的文件刷新后就会出现，不需要额外操作
 
-## 目录结构
+## 文件夹是干什么的
 
 ```
 pdf-archive/
-├── index.html              网页入口
-├── site.json               站点标题、描述、仓库地址
-├── files/                  ← PDF 全部放这里
+├── index.html              网页入口（这个名字不能改，改了网页打不开）
+├── README.md               这份说明
+├── 网站设置.json            改网页标题、描述、仓库地址
+├── 售后资料/                ← 你的 PDF 全部放这里
 │   ├── 01-产品手册/
 │   ├── 02-维修与调试/
 │   ├── 03-固件与软件/
 │   ├── 04-常见问题/
 │   ├── 05-表单与协议/
 │   └── 06-培训资料/
-├── data/
-│   ├── documents.json      自动生成的索引（勿手改）
-│   └── documents.js        索引的 JS 副本，便于本地直接打开
-├── assets/                 样式与前端脚本
-├── scripts/
-│   ├── build_index.py      扫描 files/ 重建索引
-│   ├── add_pdf.py          一键归档 PDF
-│   └── github-workflow.example.yml  可选的自动索引工作流
-├── add-pdf.cmd             把 PDF 拖到它上面即可归档
-├── update-index.cmd        双击重建索引
-└── preview.cmd             双击本地预览
+├── 网页资源/               网页的样式和程序，不用动
+├── 索引数据/               自动生成的文件清单，不用动
+├── 维护脚本/               维护用的小工具，不用动
+│   ├── 生成清单.py
+│   ├── 添加文件.py
+│   └── 自动更新清单(示例).yml
+├── ①把PDF拖到我身上.cmd    把 PDF 拖到它上面，自动归档并上传
+├── ②更新文件清单.cmd       双击，重新扫描资料文件夹
+└── ③本地预览网页.cmd       双击，在电脑上看网页效果
 ```
 
 ## 本地预览
 
-双击 `preview.cmd`（等价于 `python -m http.server 8123`），浏览器打开 <http://localhost:8123>。
-
-> 直接双击 `index.html` 也能看到列表（索引有一份 JS 副本），但 PDF 内嵌预览受浏览器本地文件策略限制，建议用上面的本地服务器。
+双击 `③本地预览网页.cmd`，浏览器会自动打开 <http://localhost:8123>。看完关掉黑色窗口即可。
 
 ## 添加文件
 
 **方式一：网页上传（最省事）**
 
-在 GitHub 仓库里进入 `files/` 下的某个分类目录 → `Add file` → `Upload files` → 拖入 PDF → 提交。
-页面会通过 GitHub 接口自动发现新文件（时间位置显示「网页上传」），**不需要任何额外配置**。
-想补全文件大小/时间等信息，运行一次 `python scripts/build_index.py`（或启用下方的自动索引）。
+在 GitHub 仓库里进入 `售后资料` 下的某个分类文件夹 → `Add file` → `Upload files` → 拖入 PDF → 提交。
+刷新网页就能看到新文件（时间位置显示「网页上传」）。
 
-**方式二：拖到 `add-pdf.cmd` 上**
+**方式二：拖到 `①把PDF拖到我身上.cmd` 上**
 
-把 PDF 拖到 `add-pdf.cmd` 图标上松手，脚本会复制文件、重建索引、提交并推送。
+把 PDF 拖到 `①把PDF拖到我身上.cmd` 图标上松手，脚本会复制文件、更新清单、提交并推送。
 
 **方式三：命令行**
 
 ```bash
-python scripts/add_pdf.py "D:/资料/新手册.pdf" --category 产品手册 --push
-python scripts/add_pdf.py a.pdf b.pdf --category 维修与调试
-python scripts/build_index.py          # 只重建索引
+python 维护脚本/添加文件.py "D:/资料/新手册.pdf" --category 产品手册 --push
+python 维护脚本/添加文件.py a.pdf b.pdf --category 维修与调试
+python 维护脚本/生成清单.py          # 只重新生成文件清单
 ```
 
 ## 调整分类
 
-- **新增分类**：新建目录 `files/07-退换货/`，数字前缀只用于排序，网页显示时会自动去掉
-- **改名**：直接改目录名
+- **新增分类**：新建文件夹 `售后资料/07-退换货/`，数字前缀只用于排序，网页显示时会自动去掉
+- **改名**：直接改文件夹名
 - **排序**：改数字前缀即可
-- **不要**把 PDF 直接丢在 `files/` 根目录太久，它们会归入「未分类」
+- **不要**把 PDF 直接丢在 `售后资料/` 根目录太久，它们会归入「未分类」
 
-## 改站点标题
+## 改网页标题
 
-编辑 `site.json`：
+编辑 `网站设置.json`：
 
 ```json
 {
   "title": "AIP 售后文件库",
   "description": "售后资料集中存放，按分类归档，支持搜索与在线预览",
-  "repo": "https://github.com/你的用户名/仓库名"
+  "repo": "https://github.com/AIP-jishuzhichi/aip-after-sales-docs"
 }
 ```
 
-`repo` 填上仓库地址后，顶栏的 GitHub 按钮就会显示。
+`repo` 填仓库地址后，顶栏的 GitHub 按钮就会显示。
 
 ## 发布到 GitHub Pages
 
-```bash
-git init
-git add -A
-git commit -m "init: PDF 文件库"
-git branch -M main
-git remote add origin https://github.com/<用户名>/<仓库名>.git
-git push -u origin main
-```
-
-然后在仓库 `Settings → Pages` 里把 Source 设为 `Deploy from a branch`，分支选 `main`、目录选 `/ (root)`，保存后访问
+仓库 `Settings → Pages` → Source 选 `Deploy from a branch`，分支 `main`、目录 `/ (root)`，保存后访问
 `https://<用户名>.github.io/<仓库名>/`。
 
-## 可选：让索引在网页上传后自动重建
+## 可选：让文件清单在网页上传后自动重建
 
-`scripts/github-workflow.example.yml` 是一份现成的工作流：把 PDF 提交到 `files/` 后，它会自动运行
-`build_index.py` 并把更新后的索引提交回仓库，这样网页上传的文件也能带上准确的更新时间。
+`维护脚本/自动更新清单(示例).yml` 是一份现成的工作流：PDF 提交到 `售后资料/` 后，自动运行
+`生成清单.py` 并把新清单提交回仓库，这样网页上传的文件也能带上准确的更新时间。
 
-启用方式：在 GitHub 网页上进入 `Add file → Create new file`，文件名填 `.github/workflows/build-index.yml`，
-把示例文件的内容粘贴进去提交即可（在网页上创建不需要额外权限）。
+启用方式：在 GitHub 网页上进入 `Add file → Create new file`，文件名填 `.github/workflows/自动更新清单.yml`，
+把示例文件内容粘贴进去提交即可（网页上创建不需要额外权限）。
 
 ## 说明
 

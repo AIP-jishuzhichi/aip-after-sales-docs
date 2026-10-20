@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""扫描 files/ 目录，生成网页用的索引 data/documents.json。
+"""扫描「售后资料」文件夹，生成网页用的文件清单 索引数据/documents.json。
 
 用法：
-    python scripts/build_index.py
+    python 维护脚本/生成清单.py
 
 规则：
-    - files/ 下的一级目录 = 一个分类，目录名去掉 "01-" 这类数字前缀后作为显示名；
-    - files/ 根目录下的 PDF 归入「未分类」；
+    - 售后资料/ 下的一级文件夹 = 一个分类，文件夹名去掉 "01-" 这类数字前缀后作为显示名；
+    - 售后资料/ 根目录下的 PDF 归入「未分类」；
     - 只收录 .pdf 文件，其它文件忽略；
-    - 更新时间优先取 git 最后一次提交时间，其次沿用旧索引，最后回退文件修改时间。
+    - 更新时间优先取 git 最后一次提交时间，其次沿用旧清单，最后回退文件修改时间。
 """
 from __future__ import annotations
 
@@ -20,13 +20,13 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES_DIR = ROOT / "files"
-OUT_FILE = ROOT / "data" / "documents.json"
-SITE_FILE = ROOT / "site.json"
+FILES_DIR = ROOT / "售后资料"
+OUT_FILE = ROOT / "索引数据" / "documents.json"
+SITE_FILE = ROOT / "网站设置.json"
 
 TZ = timezone(timedelta(hours=8))
 UNCATEOGRIZED = "未分类"
-SKIP_DIRS = {"node_modules", ".git", ".github", "assets", "scripts", "data"}
+SKIP_DIRS = {"node_modules", ".git", ".github", "网页资源", "维护脚本", "索引数据"}
 
 
 def load_site() -> dict:
@@ -175,7 +175,7 @@ def main() -> int:
     OUT_FILE.write_text(text + "\n", encoding="utf-8")
 
     # 同步输出一份 JS 版本，便于直接双击 index.html 打开（file:// 下无法 fetch）
-    js_file = ROOT / "data" / "documents.js"
+    js_file = ROOT / "索引数据" / "documents.js"
     js_file.write_text(
         "/* 由 scripts/build_index.py 自动生成，请勿手动修改 */\n"
         "window.__DOCUMENTS__ = " + text + ";\n",

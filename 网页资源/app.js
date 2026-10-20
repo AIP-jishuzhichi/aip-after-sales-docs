@@ -96,7 +96,7 @@
 
   /* ---------- 数据 ---------- */
   function loadData() {
-    return fetch("data/documents.json?t=" + Date.now(), { cache: "no-store" })
+    return fetch("索引数据/documents.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
@@ -161,10 +161,10 @@
     entries.forEach(function (node) {
       if (node.type !== "blob") return;
       var path = node.path || "";
-      if (path.indexOf("files/") !== 0 || !/\.pdf$/i.test(path)) return;
+      if (path.indexOf("售后资料/") !== 0 || !/\.pdf$/i.test(path)) return;
       if (seen[path]) return;
 
-      var seg = path.slice(6).split("/");
+      var seg = path.slice("售后资料/".length).split("/");
       var cid = seg.length > 1 ? seg[0] : "";
       var name = cid ? (cid.replace(/^\d+[\s._-]*/, "") || cid) : "未分类";
 
@@ -276,10 +276,10 @@
       } else if (state.cat !== "all") {
         var cat = state.categories.find(function (c) { return c.id === state.cat; });
         el.emptyTitle.textContent = (cat ? cat.name : "该分类") + " 还没有文件";
-        el.emptyDesc.innerHTML = "把 PDF 放进 <code>files/" + escapeHtml(state.cat) + "/</code> 目录，再运行一次索引脚本。";
+        el.emptyDesc.innerHTML = "把 PDF 放进 <code>售后资料/" + escapeHtml(state.cat) + "/</code> 文件夹，再重新生成一次文件清单。";
       } else {
         el.emptyTitle.textContent = "仓库还是空的";
-        el.emptyDesc.innerHTML = "把 PDF 放进 <code>files/</code> 下任意分类目录，运行 <code>python scripts/build_index.py</code>，文档就会出现在这里。";
+        el.emptyDesc.innerHTML = "把 PDF 放进 <code>售后资料/</code> 下任意分类文件夹，网页就会自动列出它们。";
       }
     } else {
       el.empty.hidden = true;
@@ -446,8 +446,8 @@
     .catch(function (err) {
       el.empty.hidden = false;
       el.emptyTitle.textContent = "索引没有加载成功";
-      el.emptyDesc.innerHTML = "请确认 <code>data/documents.json</code> 存在；如果刚添加过文件，运行 " +
-        "<code>python scripts/build_index.py</code> 重新生成索引。" +
+      el.emptyDesc.innerHTML = "请确认 <code>索引数据/documents.json</code> 存在；如果刚添加过文件，运行 " +
+        "<code>②更新文件清单.cmd</code> 重新生成清单。" +
         '<br><span style="color:#b0b7c3">' + escapeHtml(err.message) + "</span>";
     });
 })();

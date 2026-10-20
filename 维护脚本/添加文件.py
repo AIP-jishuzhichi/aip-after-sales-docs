@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""把 PDF 归档进 files/ 并自动更新索引（可选自动提交推送）。
+"""把 PDF 归档进「售后资料」文件夹并自动更新文件清单（可选自动提交推送）。
 
 用法：
-    python scripts/add_pdf.py "D:/资料/某手册.pdf" --category 产品手册
-    python scripts/add_pdf.py a.pdf b.pdf --category 维修与调试 --push
-    python scripts/add_pdf.py a.pdf          # 不给分类则放进 files/ 根目录
+    python 维护脚本/添加文件.py "D:/资料/某手册.pdf" --category 产品手册
+    python 维护脚本/添加文件.py a.pdf b.pdf --category 维修与调试 --push
+    python 维护脚本/添加文件.py a.pdf          # 不给分类则放进 售后资料/ 根目录
 
 参数：
-    --category  分类名或目录名（如 产品手册 / 01-产品手册）；不存在会自动新建
+    --category  分类名或文件夹名（如 产品手册 / 01-产品手册）；不存在会自动新建
     --title     覆盖网页上显示的标题（默认用文件名）
     --push      归档后自动 git add / commit / push
 """
@@ -21,8 +21,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES_DIR = ROOT / "files"
-SKIP_DIRS = {"node_modules", ".git", ".github", "assets", "scripts", "data"}
+FILES_DIR = ROOT / "售后资料"
+SKIP_DIRS = {"node_modules", ".git", ".github", "网页资源", "维护脚本", "索引数据"}
 
 
 def existing_categories() -> dict[str, Path]:
@@ -124,8 +124,8 @@ def main() -> int:
         print("没有文件被归档。")
         return 1
 
-    print("\n[1/2] 重建索引 …")
-    proc = run([sys.executable, str(ROOT / "scripts" / "build_index.py")])
+    print("\n[1/2] 重新生成文件清单 …")
+    proc = run([sys.executable, str(ROOT / "维护脚本" / "生成清单.py")])
     sys.stdout.write(proc.stdout)
     if proc.returncode != 0:
         sys.stderr.write(proc.stderr)

@@ -6,7 +6,7 @@
 <title>PDF 文件库</title>
 <meta name="description" content="按分类归档的 PDF 文档库，支持搜索与在线预览。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f6df6'/%3E%3Cpath d='M10 9h7l5 5v9a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2z' fill='%23fff'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="网页资源/style.css">
 </head>
 <body>
 
@@ -52,13 +52,13 @@
     <ul class="cat-list" id="catList"></ul>
 
     <div class="side-card">
-      <div class="side-card-title">目录结构</div>
-      <pre class="tree">files/
+      <div class="side-card-title">文件放在哪</div>
+      <pre class="tree">售后资料/
  ├─ 01-产品手册/
  ├─ 02-维修与调试/
  ├─ 03-固件与软件/
  └─ …</pre>
-      <p>把 PDF 放进对应目录，跑一次索引脚本即可。</p>
+      <p>把 PDF 放进对应分类文件夹，网页就会自动列出。</p>
     </div>
   </aside>
 
@@ -144,37 +144,34 @@
       <div class="step">
         <span class="step-no">1</span>
         <div>
-          <h3>网页上直接拖</h3>
-          <p>在 GitHub 仓库页面进入 <code>files/</code> 下的分类目录，点 <b>Add file → Upload files</b>，把 PDF 拖进去提交即可。</p>
+          <h3>网页上直接上传（最省事）</h3>
+          <p>打开 GitHub 仓库，进入 <code>售后资料</code> 里的某个分类文件夹，点 <b>Add file → Upload files</b>，把 PDF 拖进去提交即可。</p>
         </div>
       </div>
       <div class="step">
         <span class="step-no">2</span>
         <div>
-          <h3>本地命令行</h3>
-          <p>把 PDF 复制进分类目录，然后运行：</p>
-          <pre class="code">python scripts/build_index.py
-git add -A
-git commit -m "docs: 新增资料"
-git push</pre>
+          <h3>拖到「①把PDF拖到我身上」</h3>
+          <p>在电脑上把 PDF 拖到这个文件图标上松手，它会自动归档、更新清单并上传到 GitHub。</p>
         </div>
       </div>
       <div class="step">
         <span class="step-no">3</span>
         <div>
-          <h3>一键脚本</h3>
-          <p>把 PDF 拖到 <code>add-pdf.cmd</code> 上，脚本会自动归档、更新索引并推送。</p>
+          <h3>命令行</h3>
+          <p>在项目文件夹里执行：</p>
+          <pre class="code">python 维护脚本/添加文件.py "手册.pdf" --category 产品手册 --push</pre>
         </div>
       </div>
     </div>
 
-    <p class="modal-foot">索引文件 <code>data/documents.json</code> 由脚本自动生成，不需要手动编辑。</p>
+    <p class="modal-foot">文件清单 <code>索引数据/documents.json</code> 由脚本自动生成，不需要手动编辑。</p>
   </div>
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
 
-<script src="data/documents.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="索引数据/documents.js"></script>
+<script src="网页资源/app.js"></script>
 </body>
 </html>

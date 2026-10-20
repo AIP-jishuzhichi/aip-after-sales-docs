@@ -1,10 +1,10 @@
-name: Update document index
+name: 自动更新文件清单
 
 on:
   push:
     branches: [main]
     paths:
-      - "files/**"
+      - "售后资料/**"
   workflow_dispatch:
 
 permissions:
@@ -14,27 +14,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 拉取仓库
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Python
+      - name: 准备 Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Rebuild index
-        run: python scripts/build_index.py
+      - name: 重新生成文件清单
+        run: python 维护脚本/生成清单.py
 
-      - name: Commit changes
+      - name: 提交变更
         run: |
-          if [ -n "$(git status --porcelain data/)" ]; then
+          if [ -n "$(git status --porcelain 索引数据/)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/
-            git commit -m "chore: 重建文档索引"
+            git add 索引数据/
+            git commit -m "chore: 重新生成文件清单"
             git push
           else
-            echo "索引无变化，跳过提交"
+            echo "清单无变化，跳过提交"
           fi
