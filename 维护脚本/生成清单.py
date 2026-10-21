@@ -170,6 +170,17 @@ def main() -> int:
         "categories": categories,
         "documents": docs,
     }
+    # 资料没有任何变化时沿用旧的时间戳，避免生成无意义的提交
+    if OUT_FILE.exists():
+        try:
+            old = json.loads(OUT_FILE.read_text(encoding="utf-8"))
+            if all(old.get(k) == payload[k] for k in ("stats", "categories", "documents")):
+                payload["site"]["generatedAt"] = old.get("site", {}).get(
+                    "generatedAt", payload["site"]["generatedAt"]
+                )
+        except Exception:
+            pass
+
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(payload, ensure_ascii=False, indent=2)
     OUT_FILE.write_text(text + "\n", encoding="utf-8")
@@ -177,7 +188,7 @@ def main() -> int:
     # 同步输出一份 JS 版本，便于直接双击 index.html 打开（file:// 下无法 fetch）
     js_file = ROOT / "索引数据" / "documents.js"
     js_file.write_text(
-        "/* 由 scripts/build_index.py 自动生成，请勿手动修改 */\n"
+        "/* 由 维护脚本/生成清单.py 自动生成，请勿手动修改 */\n"
         "window.__DOCUMENTS__ = " + text + ";\n",
         encoding="utf-8",
     )

@@ -1,10 +1,10 @@
-/* 由 scripts/build_index.py 自动生成，请勿手动修改 */
+/* 由 维护脚本/生成清单.py 自动生成，请勿手动修改 */
 window.__DOCUMENTS__ = {
   "site": {
     "title": "AIP 售后文件库",
     "description": "售后资料集中存放，按分类归档，支持搜索与在线预览",
     "repo": "https://github.com/AIP-jishuzhichi/aip-after-sales-docs",
-    "generatedAt": "2026-10-21T16:13:44+08:00"
+    "generatedAt": "2026-10-21T16:19:02+08:00"
   },
   "stats": {
     "documents": 89,
@@ -27,7 +27,7 @@ window.__DOCUMENTS__ = {
       "categoryId": "01-常见问题",
       "category": "常见问题",
       "bytes": 174576,
-      "updated": "2026-10-21T13:23:08+08:00"
+      "updated": "2026-10-21T16:13:45+08:00"
     },
     {
       "id": "售后资料/01-常见问题/闫华杰-电阻不平衡度公式.pdf",
